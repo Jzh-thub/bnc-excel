@@ -1,0 +1,21 @@
+{
+  "name": "blue-nest-cloud/bnc-excel",
+  "description": "Excel",
+  "type": "library",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "bnc\\excel\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Jzh-thub",
+      "email": "74651570+Jzh-thub@users.noreply.github.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.2",
+    "phpoffice/phpspreadsheet": "^1.18"
+  }
+}
