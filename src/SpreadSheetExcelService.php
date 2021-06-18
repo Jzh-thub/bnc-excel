@@ -133,25 +133,40 @@ class SpreadSheetExcelService
     }
 
     /**
+     * 设置保存路径
+     * @param string $path
+     * @return $this
+     */
+    public function setPath(string $path): SpreadSheetExcelService
+    {
+        self::$path = $path;
+        return $this;
+    }
+
+    /**
      * 设置保存excel目录
      * @return false|string
+     * @throws \Exception
      */
     public static function savePath()
     {
+        if (DIRECTORY_SEPARATOR != substr(self::$path, 0, 1)) {
+            throw new \Exception('保存路径配置错误,请以/做为开始');
+        }
         if (!is_dir(self::$path)) {
             if (mkdir(self::$path, 0700) == false)
-                return false;
+                throw new \Exception('生成目录失败');
         }
 
         $mont_path = self::$path . date('Ym');
         if (!is_dir($mont_path)) {
             if (mkdir($mont_path, 0700) == false)
-                return false;
+                throw new \Exception('生成目录失败');
         }
         $day_path = $mont_path . DIRECTORY_SEPARATOR . date('d');
         if (!is_dir($day_path)) {
             if (mkdir($day_path, 0700) == false)
-                return false;
+                throw new \Exception('生成目录失败');
         }
         return $day_path;
     }
@@ -328,10 +343,11 @@ class SpreadSheetExcelService
     /**
      * 保存表格数据，并下载
      * @param string $fileName 文件名
-     * @param string $suffix 文件名后缀
+     * @param string $suffix 文件名后缀 xlsx,xls
      * @param bool   $is_save 是否保存文件
      * @return string
      * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
+     * @throws \Exception
      */
     public function excelSave(string $fileName = '', string $suffix = 'xlsx', bool $is_save = false): string
     {
@@ -349,7 +365,7 @@ class SpreadSheetExcelService
         $writer      = new Xlsx($spreadsheet);
         if (!$is_save) {
             if ($suffix == 'xlsx') {
-            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+                header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
             } elseif ($suffix == 'xls') {
                 header('Content-Type: application/vnd.ms-excel');
             }
